@@ -3,8 +3,10 @@ package com.iif.higherorlower;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -12,22 +14,20 @@ import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
 
-    int random;
+    private EditText editText;
+    private Button button;
+    private long num;
 
-    public void generateRandomNumber(){
+    public long generateRandomNumber(){
         Random rand = new Random();
-        random = rand.nextInt(20) + 1;
+        long random = rand.nextInt(20) + 1;
+        return random;
     }
 
 
-    public void guessFunction(View view){
-
-
-        EditText userNumberEditText =  findViewById(R.id.userNumberEditText);
-        int finalUserNumber = Integer.parseInt(userNumberEditText.getText().toString());
+    public void guessFunction(long random, long finalUserNumber){
 
         String message;
-
 
         if(finalUserNumber > random){
             message = "Lower";
@@ -35,11 +35,12 @@ public class MainActivity extends AppCompatActivity {
             message = "Higher";
         } else {
             message = "You got it right, Try again";
-            generateRandomNumber();
+            num = generateRandomNumber();
+
         }
 
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
-        Log.i("random Number", Integer.toString(random));
+        Log.i("random Number", Integer.toString((int) random));
 
     }
 
@@ -49,6 +50,26 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        generateRandomNumber();
+        num = generateRandomNumber();
+
+        editText = (EditText) findViewById(R.id.userNumberEditText);
+        button = (Button) findViewById(R.id.myBtn);
+
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String number = editText.getText().toString();
+
+
+                if(!TextUtils.isEmpty(number)){
+                    int x = Integer.parseInt(number);
+                    guessFunction(num,x);
+                }else {
+                    Toast.makeText(MainActivity.this, "enter a guess!", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+
     }
 }
